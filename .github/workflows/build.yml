@@ -18,36 +18,19 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      MDBOOK_VERSION: 0.4.40
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Install mdBook
-        run: |
-          curl --proto '=https' --tlsv1.2 -LsSf https://github.com/rust-lang/mdBook/releases/download/v${MDBOOK_VERSION}/mdbook-v${MDBOOK_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz -C "$HOME/.cargo/bin"
-
+      - uses: actions/checkout@main
+      - name: Setup mdBook
+        uses: peaceiris/actions-mdbook@main
+        with:
+          mdbook-version: "latest"
       - name: Generate SUMMARY.md
         run: ./scripts/gen-summary.sh
-
       - name: Build with mdBook
         run: mdbook build
-
       - name: Setup Pages
-        uses: actions/configure-pages@v5
-
+        uses: actions/configure-pages@main
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@main
         with:
           path: ./book
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
