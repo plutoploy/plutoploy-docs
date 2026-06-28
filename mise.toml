@@ -1,0 +1,17 @@
+[tools]
+mdbook = "latest"
+auto-doc = "latest"
+
+[tasks.summary]
+description = "Regenerate src/SUMMARY.md from the files in src/"
+run = "./scripts/gen-summary.sh"
+
+[tasks.build]
+description = "Regenerate SUMMARY then build the book"
+depends = ["summary"]
+run = "mdbook build"
+
+[tasks.serve]
+description = "Regenerate SUMMARY then live-preview"
+depends = ["summary"]
+run = "mdbook serve --open"
